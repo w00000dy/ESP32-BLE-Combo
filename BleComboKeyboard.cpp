@@ -189,7 +189,7 @@ void BleComboKeyboard::taskServer(void* pvParameter) {
   bleKeyboardInstance->hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
   bleKeyboardInstance->hid->startServices();
 
-  bleKeyboardInstance->onStarted(pServer)
+  bleKeyboardInstance->onStarted(pServer);
 
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
   pAdvertising->setAppearance(HID_KEYBOARD);
