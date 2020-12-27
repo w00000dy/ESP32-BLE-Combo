@@ -121,7 +121,8 @@ public:
   std::string deviceName;
 
   BLECharacteristic* inputMouse;
-
+protected:
+  virtual void onStarted(BLEServer *pServer) { };
 };
 
 #endif // CONFIG_BT_ENABLED
