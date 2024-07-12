@@ -34,46 +34,44 @@ VS Code:
 
 ## Example
 
-```
+```c++
+#include <Arduino.h>
 #include <BleCombo.h>
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println("Starting work!");
-  Keyboard.begin();
-  Mouse.begin();
+    Serial.begin(115200);
+    Keyboard.begin();
+    Mouse.begin();
+
+    Serial.println("The Bluetooth Device Is Ready To Pair");
+
+    // wait until client is connected
+    while (!Keyboard.isAuthenticated()) {
+        delay(100);
+    }
+
+    Serial.println("The Bluetooth Device Is Connected Successfully");
 }
 
 void loop() {
-  if(Keyboard.isConnected()) {
-    Serial.println("Sending 'Hello world'");
-    Keyboard.println("Hello World");
+    if (Keyboard.isConnected()) {
+        Serial.println("Move mouse pointer up");
+        for (uint8_t i = 50; i > 0; i--) {
+            Mouse.move(0, -10);
+            delay(10);
+        }
 
-    Serial.println("Sending Enter key...");
-    Keyboard.write(KEY_RETURN);
+        delay(1000);
 
-    Serial.println("Sending Play/Pause media key...");
-    Keyboard.write(KEY_MEDIA_PLAY_PAUSE);
+        Serial.println("Move mouse pointer down");
+        for (uint8_t i = 50; i > 0; i--) {
+            Mouse.move(0, 10);
+            delay(10);
+        }
+    }
 
-    Serial.println("Sending Ctrl+Alt+Delete...");
-    Keyboard.press(KEY_LEFT_CTRL);
-    Keyboard.press(KEY_LEFT_ALT);
-    Keyboard.press(KEY_DELETE);
-    delay(100);
-    Keyboard.releaseAll();
-
-    Serial.println("Move mouse pointer up");
-    Mouse.move(0,-10);
-    
-    Serial.println("Scroll Down");
-    Mouse.move(0,0,-1);
-
-    Serial.println("Left click");
-    Mouse.click(MOUSE_LEFT);
-  }
-  
-  Serial.println("Waiting 2 seconds...");
-  delay(2000);
+    Serial.println("Waiting 2 seconds...");
+    delay(2000);
 }
 
 ```
