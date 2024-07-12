@@ -4,6 +4,7 @@
 #if defined(CONFIG_BT_ENABLED)
 
 #include "BleConnectionStatus.h"
+#include "BleSecurityStatus.h"
 #include "BLEHIDDevice.h"
 #include "BLECharacteristic.h"
 #include "Print.h"
@@ -90,6 +91,7 @@ class BleComboKeyboard : public Print
 {
 private:
   BleConnectionStatus* connectionStatus;
+  BleSecurityStatus* securityStatus;
   BLEHIDDevice* hid;
   BLECharacteristic* inputKeyboard;
   BLECharacteristic* outputKeyboard;
@@ -115,6 +117,7 @@ public:
   
   void releaseAll(void);
   bool isConnected(void);
+  bool isAuthenticated(void);
   void setBatteryLevel(uint8_t level);
   uint8_t batteryLevel;
   std::string deviceManufacturer;

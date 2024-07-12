@@ -8,6 +8,7 @@
 #include "sdkconfig.h"
 
 #include "BleConnectionStatus.h"
+#include "BleSecurityStatus.h"
 #include "KeyboardOutputCallbacks.h"
 #include "BleComboKeyboard.h"
 
@@ -137,6 +138,7 @@ BleComboKeyboard::BleComboKeyboard(std::string deviceName, std::string deviceMan
   this->deviceManufacturer = deviceManufacturer;
   this->batteryLevel = batteryLevel;
   this->connectionStatus = new BleConnectionStatus();
+  this->securityStatus = new BleSecurityStatus();
 }
 
 void BleComboKeyboard::begin(void)
@@ -152,6 +154,10 @@ bool BleComboKeyboard::isConnected(void) {
   return this->connectionStatus->connected;
 }
 
+bool BleComboKeyboard::isAuthenticated(void) {
+  return this->securityStatus->authenticated;
+}
+
 void BleComboKeyboard::setBatteryLevel(uint8_t level) {
   this->batteryLevel = level;
   if (hid != 0)
@@ -161,6 +167,7 @@ void BleComboKeyboard::setBatteryLevel(uint8_t level) {
 void BleComboKeyboard::taskServer(void* pvParameter) {
   BleComboKeyboard* bleKeyboardInstance = (BleComboKeyboard *) pvParameter; //static_cast<BleComboKeyboard *>(pvParameter);
   BLEDevice::init(bleKeyboardInstance->deviceName);
+  BLEDevice::setSecurityCallbacks(bleKeyboardInstance->securityStatus);
   BLEServer *pServer = BLEDevice::createServer();
   pServer->setCallbacks(bleKeyboardInstance->connectionStatus);
 
@@ -184,7 +191,8 @@ void BleComboKeyboard::taskServer(void* pvParameter) {
 
   BLESecurity *pSecurity = new BLESecurity();
 
-  pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
+  pSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_ONLY);
+  pSecurity->setCapability(ESP_IO_CAP_IO);
 
   bleKeyboardInstance->hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
   bleKeyboardInstance->hid->startServices();
