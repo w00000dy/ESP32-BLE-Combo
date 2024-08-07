@@ -23,6 +23,7 @@ bool BleSecurityStatus::onConfirmPIN(uint32_t pass_key) {
 }
 
 bool BleSecurityStatus::onSecurityRequest() {
+    this->authenticated = false;
     Serial.println("Security Request");
     return true;
 }
